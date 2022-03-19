@@ -11,13 +11,9 @@ class BookTest extends TestCase
 {
     protected $bookService;
 
-    public function __construct(BookService $bookService)
-    {
-        $this->bookService = $bookService;        
-    }
-
     public function test_isbn_validate_correctly()
     {
+        $bookService = new BookService();
         $validIsbnNumbers = [
             "0978194527",
             "0978194004",
@@ -27,20 +23,20 @@ class BookTest extends TestCase
         ];
 
         $invalidIsbnNumbers = [
-            "0978131327",
-            "0978194284",
-            "0978419912",
-            "097812135029",
-            "097815fewrew71"
+            "0978131337",
+            "0978194984",
+            "0978419992",
+            "097812133029",
+            "097815ferew71"
         ];
         
         foreach ($validIsbnNumbers as $isbn ) {
-            $isValid = $this->bookService->isValidIsbn($isbn);
+            $isValid = $bookService->isValidIsbn($isbn);
             $this->assertTrue($isValid);
         }
 
         foreach ($invalidIsbnNumbers as $isbn ) {
-            $isValid = $this->bookService->isValidIsbn($isbn);
+            $isValid = $bookService->isValidIsbn($isbn);
             $this->assertFalse($isValid);
         }
     }
