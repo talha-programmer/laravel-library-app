@@ -25,7 +25,24 @@ class BookService
 
   public function isValidIsbn(string $isbn): bool
   {
-    return false;
+    $isbn = str_split($isbn);
+    if(sizeof($isbn) !== 10){
+      return false;
+    } 
+    $sum = 0;
+    for ($i=0; $i < 10; $i++) { 
+      $digit = (int)$isbn[$i];
+      if(!is_integer($digit)){
+        return false;
+      }
+      $sum += (10 - $i) * $digit;
+    }
+
+    if($sum % 11 === 0){
+      return true;
+    } else {
+      return false;
+    }
   }
 
   public function getAll():Paginator
