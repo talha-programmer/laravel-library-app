@@ -11,6 +11,7 @@ const form = useForm({
     email: '',
     password: '',
     password_confirmation: '',
+    date_of_birth: '',
     terms: false,
 });
 
@@ -36,6 +37,11 @@ const submit = () => {
             <div class="mt-4">
                 <BreezeLabel for="email" value="Email" />
                 <BreezeInput id="email" type="email" class="mt-1 block w-full" v-model="form.email" required autocomplete="username" />
+            </div>
+
+            <div class="mt-4">
+                <BreezeLabel for="date_of_birth" value="Date of Birth" />
+                <BreezeInput id="date_of_birth" type="date" class="mt-1 block w-full" v-model="form.date_of_birth" required autocomplete="username" />
             </div>
 
             <div class="mt-4">
