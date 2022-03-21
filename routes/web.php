@@ -32,6 +32,7 @@ Route::middleware(['auth', 'verified'])->group(function (){
     })->name('dashboard');
 
     Route::get('/books', [BookController::class, 'index'])->name('books');
+    Route::get('/books/form', [BookController::class, 'form'])->name('books.form');
     Route::post('/books', [BookController::class, 'store'])->name('books.store');
     Route::delete('/books/{book}', [BookController::class, 'destroy'])->name('books.destroy');
     
