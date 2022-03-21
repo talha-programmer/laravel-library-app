@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
+use App\Enums\BookStatus;
 use App\Models\Book;
-use Brick\Math\BigInteger;
 use Exception;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +16,7 @@ class BookService
     $isbn = $attributes["isbn"];
     $published_at = $attributes["published_at"];
     $status = $attributes["status"];
+    $status = BookStatus::from($status)->name;
 
     $book = new Book([
       'title' => $title,
@@ -37,9 +38,11 @@ class BookService
     return Book::find($id);
   }
 
-  public function destroy(int $id): bool
+  public function destroy(int|Book $book): bool
   {
-    $book = self::find($id);
+    if(is_int($book)){
+      $book = self::find($book);
+    }
     try {
       DB::beginTransaction();
       $book->actionLogs()->delete();
@@ -76,6 +79,6 @@ class BookService
 
   public function getAll(): Paginator
   {
-    return Book::all()->paginate(20);
+    return Book::paginate(20);
   }
 }
