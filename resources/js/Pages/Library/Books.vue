@@ -1,12 +1,11 @@
 <script setup>
 import BreezeAuthenticatedLayout from "@/Layouts/Authenticated.vue";
 import { Link } from "@inertiajs/inertia-vue3";
+import { BookStatus } from "@/Config/enums";
 
 const props = defineProps({
   books: Object
 });
-
-console.log(props.books);
 </script>
 
 <template>
@@ -17,6 +16,22 @@ console.log(props.books);
 
     <div class="p-4 mt-8 sm:px-8 sm:py-4">
       <div class="p-4 bg-white rounded">
+        <div v-if="$page.props.flash.success">
+          <div
+            class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
+            role="alert"
+          >
+            {{ $page.props.flash.success }}
+          </div>
+        </div>
+        <div v-if="$page.props.flash.error">
+          <div
+            class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
+            role="alert"
+          >
+            {{ $page.props.flash.error }}
+          </div>
+        </div>
         <div class="flex justify-between">
           <div></div>
           <div>
@@ -105,21 +120,18 @@ console.log(props.books);
                               'group flex rounded-md items-center w-full px-2 py-2 text-sm'
                             ]"
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              class="w-5 h-5 mr-2 text-violet-400"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
+                            <Link
+                              :href="route('books.checkin', book.id)"
+                              method="post"
+                              v-if="book.status == BookStatus.CHECKED_OUT"
+                              >Checkin</Link
                             >
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                              />
-                            </svg>
-                            Edit
+                            <Link
+                              :href="route('books.checkout', book.id)"
+                              method="post"
+                              v-if="book.status == BookStatus.AVAILABLE"
+                              >Checkout</Link
+                            >
                           </button>
                         </MenuItem>
                         <MenuItem v-slot="{ active }">
@@ -131,21 +143,11 @@ console.log(props.books);
                               'group flex rounded-md items-center w-full px-2 py-2 text-sm'
                             ]"
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              class="w-5 h-5 mr-2 text-violet-400"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
+                            <Link
+                              :href="route('books.destroy', book.id)"
+                              method="delete"
+                              >Delete</Link
                             >
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                              />
-                            </svg>
-                            Delete
                           </button>
                         </MenuItem>
                       </div>
@@ -158,109 +160,65 @@ console.log(props.books);
           <tfoot>
             <tr>
               <td colspan="7" class="py-2">
-                <div
-                  class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between"
-                >
-                  <div>
-                    <p class="text-sm text-gray-500">
-                      Showing
-                      <span class="font-medium">1</span>
-                      to
-                      <span class="font-medium">5</span>
-                      of
-                      <span class="font-medium">42</span>
-                      results
-                    </p>
-                  </div>
-                  <div>
-                    <nav
-                      class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
-                      aria-label="Pagination"
+                <div class="flex flex-col items-center mt-4">
+                  <!-- Help text -->
+                  <span class="text-sm text-gray-700 dark:text-gray-400">
+                    Showing
+                    <span class="font-semibold text-gray-900 dark:text-white">{{
+                      props.books.from
+                    }}</span>
+                    to
+                    <span class="font-semibold text-gray-900 dark:text-white">{{
+                      props.books.to
+                    }}</span>
+                    of
+                    <span class="font-semibold text-gray-900 dark:text-white">{{
+                      props.books.total
+                    }}</span>
+                    Entries
+                  </span>
+                  <div class="inline-flex mt-2 xs:mt-0">
+                    <!-- Buttons -->
+                    <button
+                      class="inline-flex items-center py-2 px-4 text-sm font-medium text-white bg-gray-800 rounded-l hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                     >
-                      <a
-                        href="#"
-                        class="relative inline-flex items-center px-2 rounded-l-md border border-gray-300 text-sm font-medium text-gray-500 hover:bg-gray-50"
+                      <svg
+                        class="mr-2 w-5 h-5"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        <span class="sr-only">Previous</span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M15 19l-7-7 7-7"
-                          />
-                        </svg>
-                      </a>
-                      <!-- Current: "z-10 bg-indigo-50 border-indigo-500 text-indigo-600", Default: "bg-white border-gray-300 text-gray-500 hover:bg-gray-50" -->
-                      <a
-                        href="#"
-                        aria-current="page"
-                        class="z-10 bg-indigo-50 border-indigo-500 text-indigo-600 relative inline-flex items-center px-4 py-1 border text-sm font-medium"
+                        <path
+                          fill-rule="evenodd"
+                          d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+                          clip-rule="evenodd"
+                        ></path>
+                      </svg>
+                      <Link
+                        :href="props.books.prev_page_url"
+                        >Prev</Link
                       >
-                        1
-                      </a>
-                      <a
-                        href="#"
-                        class="border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-1 border text-sm font-medium"
+                    </button>
+                    <button
+                      class="inline-flex items-center py-2 px-4 text-sm font-medium text-white bg-gray-800 rounded-r border-0 border-l border-gray-700 hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    >
+                      <Link
+                        :href="props.books.next_page_url"
+                        >Next</Link
                       >
-                        2
-                      </a>
-                      <a
-                        href="#"
-                        class="border-gray-300 text-gray-500 hover:bg-gray-50 hidden md:inline-flex relative items-center px-4 py-1 border text-sm font-medium"
+                      <svg
+                        class="ml-2 w-5 h-5"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        3
-                      </a>
-                      <span
-                        class="relative inline-flex items-center px-4 py-1 border border-gray-300 text-sm font-medium text-gray-700"
-                      >
-                        ...
-                      </span>
-                      <a
-                        href="#"
-                        class="border-gray-300 text-gray-500 hover:bg-gray-50 hidden md:inline-flex relative items-center px-4 py-1 border text-sm font-medium"
-                      >
-                        8
-                      </a>
-                      <a
-                        href="#"
-                        class="border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-1 border text-sm font-medium"
-                      >
-                        9
-                      </a>
-                      <a
-                        href="#"
-                        class="border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-1 border text-sm font-medium"
-                      >
-                        10
-                      </a>
-                      <a
-                        href="#"
-                        class="relative inline-flex items-center px-2 py-1 rounded-r-md border border-gray-300 text-sm font-medium text-gray-500 hover:bg-gray-50"
-                      >
-                        <span class="sr-only">Next</span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M9 5l7 7-7 7"
-                          />
-                        </svg>
-                      </a>
-                    </nav>
+                        <path
+                          fill-rule="evenodd"
+                          d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+                          clip-rule="evenodd"
+                        ></path>
+                      </svg>
+                    </button>
                   </div>
                 </div>
               </td>
