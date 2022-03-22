@@ -2,6 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Enums\BookStatus;
+use App\Models\User;
+use App\Services\ActionLogService;
 use App\Services\BookService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -9,11 +12,14 @@ use Tests\TestCase;
 
 class BookTest extends TestCase
 {
-    protected $bookService;
 
     public function test_isbn_validate_correctly()
     {
-        $bookService = new BookService();
+        // I don't know how to handle these dependencies in tests
+        // that's why added like this
+        $logService = new ActionLogService();
+        $bookService = new BookService($logService);
+
         $validIsbnNumbers = [
             "0978194527",
             "0978194004",
@@ -40,4 +46,29 @@ class BookTest extends TestCase
             $this->assertFalse($isValid);
         }
     }
+
+    public function test_books_screen_can_be_rendered()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+        $response = $this->get('/books');
+
+        $response->assertStatus(200);
+    }
+
+    public function test_new_books_can_be_saved()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+        $response = $this->post('/books', [
+            'title' => 'New Book',
+            'isbn' => '0978153871',
+            'published_at' => '1990-11-20',
+            'status' => BookStatus::AVAILABLE->value,
+        ]);
+
+        $response->assertRedirect('/books');
+        $response->assertSessionHas('success');
+    }
+
 }
