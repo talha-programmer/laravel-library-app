@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('books', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->bigInteger('isbn', false, true);
+            $table->string('isbn', 10);
             $table->date('published_at');
             $table->enum('status', [
                 'CHECKED_OUT', 'AVAILABLE'
