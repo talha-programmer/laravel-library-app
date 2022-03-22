@@ -36,6 +36,8 @@ Route::middleware(['auth', 'verified'])->group(function (){
     Route::post('/books', [BookController::class, 'store'])->name('books.store');
     Route::delete('/books/{book}', [BookController::class, 'destroy'])->name('books.destroy');
     
+    Route::post('/books/checkin/{book}', [BookController::class, 'checkin'])->name('books.checkin');
+    Route::post('/books/checkout/{book}', [BookController::class, 'checkout'])->name('books.checkout');
 });
 
 require __DIR__.'/auth.php';
