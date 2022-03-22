@@ -51,9 +51,9 @@ class BookController extends Controller
 
             if ($isSaved) {
                 return redirect(route('books'))
-                    ->with('status', 'Book saved successfully.');
+                    ->with('success', 'Book saved successfully.');
             } else {
-                return response()->json(['error']);
+                return back()->with('error', "Error occurred while saving the book");
             }
         }
     }
