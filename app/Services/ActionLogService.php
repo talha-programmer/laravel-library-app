@@ -27,16 +27,10 @@ class ActionLogService
       $actionLog->action = $action;
       $actionLog->save();
       return $actionLog;
-
     } catch (Exception $exception) {
       throw $exception;
       return false;
     }
-  }
-
-  public function destroy(int $id): bool
-  {
-    return false;
   }
 
   public function getAll(): Paginator
